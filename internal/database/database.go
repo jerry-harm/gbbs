@@ -78,11 +78,17 @@ func InitDB() *gorm.DB {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
+	exist := db.Migrator().HasTable(&Group{})
 	err = db.AutoMigrate(&Group{}, &User{}, &Area{}, &Post{}, &Board{})
 	if err != nil {
 		log.Fatalln(err)
 	}
 	DB = db
+	if !exist {
+		adminGroup := Group{Name: "Admin"}
+		DB.Create(&adminGroup)
+		userGroup := Group{Name: "User"}
+		DB.Create(&userGroup)
+	}
 	return db
 }

@@ -95,6 +95,8 @@ func (m registerModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				err := database.Register(m.inputs[0].Value(), m.inputs[2].Value(), m.inputs[1].Value())
 				if err != nil {
 					return m, func() tea.Msg { return err }
+				} else {
+
 				}
 				return m, func() tea.Msg { return showBBS }
 			}

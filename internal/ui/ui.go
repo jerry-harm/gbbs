@@ -37,7 +37,7 @@ func sendToAll(msg tea.Msg) {
 
 func ProgramHandler(s ssh.Session) *tea.Program {
 	m := initModel(s)
-	p := tea.NewProgram(m, bubbletea.MakeOptions(s)...)
+	p := tea.NewProgram(m, append(bubbletea.MakeOptions(s), tea.WithAltScreen())...)
 	progs = append(progs, p)
 	return p
 }

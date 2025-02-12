@@ -13,7 +13,6 @@ func InitConfig() viper.Viper {
 	viper.SetDefault("ssh.port", "2222")
 	viper.SetDefault("ssh.keypath", "ssh_private_key.pem")
 	viper.SetDefault("ssh.newuser", "new")
-	viper.SetDefault("admingroup", "admin")
 
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
