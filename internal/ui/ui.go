@@ -4,6 +4,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/ssh"
 	"github.com/charmbracelet/wish/bubbletea"
+	"github.com/spf13/viper"
 )
 
 type state int
@@ -12,6 +13,7 @@ const (
 	showInfo state = iota
 	showRegister
 	showBBS
+	showBoard
 	showError
 )
 
@@ -47,17 +49,18 @@ type model struct {
 	session ssh.Session
 	info    tea.Model
 	regiser tea.Model
+	board   tea.Model
 	err     tea.Model
 }
 
 func initModel(s ssh.Session) tea.Model {
-
 	m := model{
 		state:   showInfo,
-		info:    initInfoModel(s),
-		regiser: initRgsiterModel(s),
-		err:     initErrorModel(s),
 		session: s,
+		info:    initInfoModel(s),
+		board:   initBoardModel(s),
+		err:     initErrorModel(s),
+		regiser: initRgsiterModel(s),
 	}
 	return m
 }
@@ -79,6 +82,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.err, cmd = m.err.Update(msg)
 		return m, cmd
 	case state:
+		if msg != showInfo && msg != showError && msg != showRegister {
+			if m.session.User() == viper.GetString("ssh.newuser") {
+				return m, func() tea.Msg { return errMsg{newState: showInfo, err: "you should not be here"} }
+			}
+		}
+		if msg == showRegister && m.session.User() != viper.GetString("ssh.newuser") {
+			return m, func() tea.Msg { return errMsg{newState: showInfo, err: "you should not be here"} }
+		}
 		m.state = msg
 	}
 
@@ -87,6 +98,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.info, cmd = m.info.Update(msg)
 	case showRegister:
 		m.regiser, cmd = m.regiser.Update(msg)
+	case showBoard:
+		m.board, cmd = m.board.Update(msg)
 	case showError:
 		m.err, cmd = m.err.Update(msg)
 	default:
@@ -105,6 +118,8 @@ func (m model) View() string {
 		return m.info.View()
 	case showRegister:
 		return m.regiser.View()
+	case showBoard:
+		return m.board.View()
 	case showError:
 		return m.err.View()
 	default:

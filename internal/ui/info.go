@@ -62,7 +62,7 @@ func (m infoModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if m.session.User() == viper.GetString("ssh.newuser") {
 			return m, func() tea.Msg { return showRegister }
 		} else {
-			return m, func() tea.Msg { return showBBS }
+			return m, func() tea.Msg { return showBoard }
 		}
 	}
 	return m, nil
