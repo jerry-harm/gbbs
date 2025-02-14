@@ -36,11 +36,11 @@ type User struct {
 }
 
 type Area struct {
-	Name           string
-	MaxLength      uint
-	WriteGroupIds  []*Group `gorm:"many2many:area_writegroups;"`
-	ReadGroupIds   []*Group `gorm:"many2many:area_readgroups;"`
-	ManageGroupIds []*Group `gorm:"many2many:area_managegroups;"`
+	Name         string
+	MaxLength    uint
+	WriteGroups  []*Group `gorm:"many2many:area_writegroups;"`
+	ReadGroups   []*Group `gorm:"many2many:area_readgroups;"`
+	ManageGroups []*Group `gorm:"many2many:area_managegroups;"`
 
 	ID        uint `gorm:"primarykey"`
 	CreatedAt time.Time

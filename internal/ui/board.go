@@ -33,7 +33,7 @@ func initBoardModel(s ssh.Session) boardModel {
 	ti.Placeholder = "hello to the world"
 	ti.Focus()
 	ti.CharLimit = 60
-	ti.Width = 20
+	ti.Width = 30
 
 	m := boardModel{
 		page:    0,

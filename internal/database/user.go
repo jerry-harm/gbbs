@@ -54,3 +54,44 @@ func Login(name string, password string) bool {
 	}
 	return comparePass(user.PasswordHash, password)
 }
+
+func (u User) Board(text string) {
+	if len(text) == 0 {
+		return
+	}
+	board := Board{
+		Text:   text,
+		UserId: u.Id,
+		User:   u,
+	}
+	DB.Create(&board)
+}
+
+func (u User) Post(area Area, title string, text string) {
+	if len(text) == 0 && len(title) == 0 {
+		return
+	}
+	create := false
+	for _, ug := range u.Groups {
+		if ug.Name == "Admin" {
+			create = true
+			break
+		}
+		for _, ag := range area.WriteGroups {
+			if ug.Id == ag.Id {
+				create = true
+				break
+			}
+		}
+	}
+	if create {
+		post := Post{
+			Title:  title,
+			Text:   text,
+			AreaId: area.ID,
+			UserId: u.Id,
+			User:   u,
+		}
+		DB.Create(&post)
+	}
+}
